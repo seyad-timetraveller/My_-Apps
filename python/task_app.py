@@ -10,6 +10,29 @@ TASK_DIR = 'tasks'
 if not os.path.exists(TASK_DIR):
     os.makedirs(TASK_DIR)
 
+def open_popup():
+    # Create a new window (pop-up)
+    popup = tk.Toplevel(root)
+    popup.title("Task Details")
+    popup.geometry("500x500")  # Set size of the pop-up window
+
+    # View task button inside the frame
+    view_button = tk.Button(popup, text="View ", command=view_task)
+    view_button.pack(side=tk.LEFT, padx=10)
+
+    #Add widgets to the pop-up window
+    label = tk.Label(popup, text="Task Details", font=("Arial", 14))
+    label.pack(pady=10)
+    task_body = tk.Text(popup, height=5, width=30)
+    task_body.pack(pady=5)
+
+    # Task body text area
+    task_body_text = tk.Text(popup, height=10, width=50) 
+    task_body_text.grid(row=3, column=0, padx=10, pady=10, sticky=tk.W)
+
+    close_button = tk.Button(popup, text="Close", command=popup.destroy)
+    close_button.pack(pady=10)
+
 # Function to list task files in the directory
 def list_task_files():
     return [f for f in os.listdir(TASK_DIR) if os.path.isfile(os.path.join(TASK_DIR, f))]
@@ -101,6 +124,10 @@ view_button.pack(side=tk.LEFT, padx=5)
 
 # Delete task button inside the frame
 delete_button = tk.Button(button_frame, text="Delete ", command=delete_task)
+delete_button.pack(side=tk.LEFT, padx=5)
+
+# Delete task button inside the frame
+delete_button = tk.Button(button_frame, text="Show ", command=open_popup)
 delete_button.pack(side=tk.LEFT, padx=5)
 
 # Task body text area
