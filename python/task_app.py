@@ -11,27 +11,43 @@ if not os.path.exists(TASK_DIR):
     os.makedirs(TASK_DIR)
 
 def open_popup():
-    # Create a new window (pop-up)
+    # Create a new Toplevel window (pop-up)
     popup = tk.Toplevel(root)
-    popup.title("Task Details")
-    popup.geometry("500x500")  # Set size of the pop-up window
+    popup.title("Saved Tasks")
+    popup.geometry("400x400")  # Set size of the pop-up window
 
-    # View task button inside the frame
-    view_button = tk.Button(popup, text="View ", command=view_task)
-    view_button.pack(side=tk.LEFT, padx=10)
-
-    #Add widgets to the pop-up window
-    label = tk.Label(popup, text="Task Details", font=("Arial", 14))
-    label.pack(pady=10)
-    task_body = tk.Text(popup, height=5, width=30)
-    task_body.pack(pady=5)
+    # Listbox to display the list of tasks
+    task_listbox_popup = tk.Listbox(popup, width=40, height=10)
+    task_listbox_popup.grid(row=0, column=0, padx=10, pady=10)
 
     # Task body text area
-    task_body_text = tk.Text(popup, height=10, width=50) 
-    task_body_text.grid(row=3, column=0, padx=10, pady=10, sticky=tk.W)
+    task_body_text_popup = tk.Text(popup, width=50, height=10, wrap='word')
+    task_body_text_popup.grid(row=1, column=0, padx=10, pady=10)
 
+    # Function to load and display the selected task content
+    def show_selected_task(event):
+        # Get the selected task title
+        selected_task_idx = task_listbox_popup.curselection()
+        if selected_task_idx:
+            task_title = task_listbox_popup.get(selected_task_idx)
+            task_body = load_task_content(task_title)
+            # Display the task content in the text area
+            task_body_text_popup.delete("1.0", tk.END)
+            task_body_text_popup.insert(tk.END, task_body)
+
+    # Populate the popup listbox with saved tasks
+    tasks = list_task_files()
+    for task in tasks:
+        task_listbox_popup.insert(tk.END, task.replace(".txt", ""))
+
+    # Bind listbox selection to display task content
+    task_listbox_popup.bind("<<ListboxSelect>>", show_selected_task)
+
+    # Close button
     close_button = tk.Button(popup, text="Close", command=popup.destroy)
-    close_button.pack(pady=10)
+    close_button.grid(row=2, column=0, padx=10, pady=10, sticky="e")
+
+
 
 # Function to list task files in the directory
 def list_task_files():
@@ -126,9 +142,9 @@ view_button.pack(side=tk.LEFT, padx=5)
 delete_button = tk.Button(button_frame, text="Delete ", command=delete_task)
 delete_button.pack(side=tk.LEFT, padx=5)
 
-# Delete task button inside the frame
-delete_button = tk.Button(button_frame, text="Show ", command=open_popup)
-delete_button.pack(side=tk.LEFT, padx=5)
+# show task button inside the frame
+show_button = tk.Button(button_frame, text="Show ", command=open_popup)
+show_button.pack(side=tk.LEFT, padx=5)
 
 # Task body text area
 task_body_text = tk.Text(root, height=10, width=50) 
